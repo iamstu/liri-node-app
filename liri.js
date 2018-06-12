@@ -2,6 +2,7 @@ require("dotenv").config();
 var keys = require("./keys");
 var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
+var request = require("request");
 
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
@@ -33,3 +34,23 @@ if (process.argv[2] === "spotify-this-song"){
         console.log(JSON.stringify(data.tracks.items[0].album.name, null, 2));
     });
 }
+
+if (process.argv[2] === "movie-this"){
+    var movie = "Mr.Nobody";
+
+    if (process.argv[3]) {
+        movie = process.argv[3];
+    }
+    request("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy", function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            console.log(JSON.parse(body).Title);
+            console.log(JSON.parse(body).Year);
+            console.log(JSON.parse(body).Ratings[0].Value);
+            console.log(JSON.parse(body).Ratings[1].Value);
+            console.log(JSON.parse(body).Country);
+            console.log(JSON.parse(body).Language);
+            console.log(JSON.parse(body).Plot);
+            console.log(JSON.parse(body).Actors);
+        }
+    });
+};
