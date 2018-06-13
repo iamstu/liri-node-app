@@ -3,12 +3,13 @@ var keys = require("./keys");
 var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
 var request = require("request");
+var fs = require("fs");
 
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
-if (process.argv[2] === "my-tweets") {
-    
+
+var checkTweets = function() {
     var params = {screen_name: 'KingslyBrad'};
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
     if (!error) {
@@ -19,7 +20,7 @@ if (process.argv[2] === "my-tweets") {
     });
 }
 
-if (process.argv[2] === "spotify-this-song"){
+var checkSong = function() {
     var song = "The Sign Ace of Base";
     if (process.argv[3]){
         song = process.argv[3];
@@ -35,9 +36,8 @@ if (process.argv[2] === "spotify-this-song"){
     });
 }
 
-if (process.argv[2] === "movie-this"){
+var checkMovie = function() {
     var movie = "Mr.Nobody";
-
     if (process.argv[3]) {
         movie = process.argv[3];
     }
@@ -53,4 +53,43 @@ if (process.argv[2] === "movie-this"){
             console.log(JSON.parse(body).Actors);
         }
     });
-};
+}
+
+var run = function(){
+    if (process.argv[2] === "my-tweets") {
+       checkTweets();
+    }
+    
+    if (process.argv[2] === "spotify-this-song"){
+        checkSong();
+    }
+    
+    if (process.argv[2] === "movie-this"){
+        checkMovie();
+    };
+    };
+
+if (process.argv[2] === "do-what-it-says") {
+    fs.readFile("random.txt", "utf8", function(error, data) {
+            var commands= data.split(",");
+            if (commands[0] === "my-tweets") {
+                checkTweets();
+             }
+             
+             if (commands[0] === "spotify-this-song"){
+                 process.argv[3] = commands[1];
+                 checkSong();
+             }
+             
+             if (commands[0] === "movie-this"){
+                process.argv[3] = commands[1];
+                 checkMovie();
+             };
+            
+    })
+}
+else{
+    run();
+}
+
+
