@@ -23,7 +23,13 @@ var checkTweets = function() {
 var checkSong = function() {
     var song = "The Sign Ace of Base";
     if (process.argv[3]){
-        song = process.argv[3];
+        song = "";
+        for ( var i = 3; i < process.argv.length; i++) {
+            song += process.argv[i];
+            if (i < process.argv.length - 1){
+                song += " ";
+            }
+        }
     }
     spotify.search({ type: 'track', query: song, limit: 1}, function(err, data) {
         if (err) {
@@ -39,7 +45,13 @@ var checkSong = function() {
 var checkMovie = function() {
     var movie = "Mr.Nobody";
     if (process.argv[3]) {
-        movie = process.argv[3];
+        movie = "";
+        for ( var i = 3; i < process.argv.length; i++) {
+            movie += process.argv[i];
+            if (i < process.argv.length - 1){
+                movie += "+";
+            }
+        }
     }
     request("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy", function(error, response, body) {
         if (!error && response.statusCode === 200) {
